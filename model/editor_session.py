@@ -14,22 +14,23 @@ class EditorSession:
     def loop(self):
         while True:
             self.window.draw(self.stdscr)
-
             c = self.stdscr.getch()
             if c == 27:
                 break
-            if c == curses.KEY_UP:
-                self.editor.add_char()
-                # self.document.cursor.up()
-            if c == curses.KEY_DOWN:
+            elif c == curses.KEY_UP:
+                self.document.cursor.up()
+            elif c == curses.KEY_DOWN:
                 self.editor.cursor.down()
-            if c == curses.KEY_LEFT:
+            elif c == curses.KEY_LEFT:
                 self.editor.cursor.left()
-            if c == curses.KEY_RIGHT:
+            elif c == curses.KEY_RIGHT:
                 self.editor.cursor.right()
-            if c == 8:
+            elif c == 8:
                 self.editor.remove_char_backspace()
-            if c == curses.KEY_DC:
+            elif c == curses.KEY_DC:
                 self.editor.remove_char_delete()
+            else:
+                c = chr(c)
+                self.editor.add_char(c)
 
             self.stdscr.move(self.editor.cursor.y + 5, self.editor.cursor.x + 1)

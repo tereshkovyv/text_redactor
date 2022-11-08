@@ -15,20 +15,24 @@ class DocumentEditor:
         self.old_to_new_line = []
         self.document = Document(path)
         self.cursor = Cursor(self.content)
+        self.modified = False
 
     def remove_char_backspace(self):
         self.document.backspace_char(self.editor_to_original_position(self.cursor.position))
         self.cursor.left()
         self.update_content(self.cursor.position)
+        self.modified = True
 
     def remove_char_delete(self):
         self.document.del_char(self.editor_to_original_position(self.cursor.position))
         self.update_content(self.cursor.position)
+        self.modified = True
 
     def add_char(self, char='f'):
         self.document.add_char(self.editor_to_original_position(self.cursor.position), char)
         self.cursor.right()
         self.update_content(self.cursor.position)
+        self.modified = True
 
     def original_to_editor_position(self, position):
         pos = Position(self.old_to_new_line[position.line], position.word)
