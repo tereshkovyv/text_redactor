@@ -2,6 +2,7 @@ import os
 import curses
 from model.document_editor import DocumentEditor
 from user_interface.editor_window import EditorWindow
+from model.alert_session import AlertSession
 
 
 class EditorSession:
@@ -16,6 +17,11 @@ class EditorSession:
             self.window.draw(self.stdscr)
             c = self.stdscr.getch()
             if c == 27:
+                if not self.editor.modified:
+                    break
+                if AlertSession(self.stdscr, 'Save changes?').loop():
+                    self.editor.document.save()
+
                 break
             elif c == curses.KEY_UP:
                 self.document.cursor.up()

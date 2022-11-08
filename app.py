@@ -1,12 +1,11 @@
 import curses
 import pathlib
 
-from model.global_session import Session
+from model.folder_session import FolderSession
 
 
 def draw(stdscr):
-    session = Session(pathlib.Path('.'))
-    session.loop(stdscr)
+    FolderSession(pathlib.Path('.')).loop(stdscr)
 
 
 if __name__ == '__main__':

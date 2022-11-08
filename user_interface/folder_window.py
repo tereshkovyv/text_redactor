@@ -1,10 +1,5 @@
 import curses
-import os
-from supportive.drawer import draw_frame
-from user_interface.editor_window import EditorWindow
-
-from supportive.alert_window import alert
-from infrastructure.folder import Folder
+from user_interface.drawer import draw_frame
 
 
 class FolderWindow():
@@ -15,7 +10,7 @@ class FolderWindow():
     def draw(self, stdscr, selected):
         stdscr.clear()
 
-        draw_frame(stdscr, 'SUPER 100% TURBO TEXT REDACTOR PRO', '1 - create .txt file | 2 - delete file')
+        draw_frame(stdscr, '1 - create .txt file | 2 - delete file')
 
         for i in range(len(self.opened_folder.content)):
             if i == selected:

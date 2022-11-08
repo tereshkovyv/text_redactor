@@ -1,5 +1,5 @@
 from infrastructure.position import Position
-from supportive.drawer import draw_frame
+from user_interface.drawer import draw_frame
 
 
 class EditorWindow:
@@ -9,7 +9,7 @@ class EditorWindow:
 
     def draw(self, stdscr):
         stdscr.clear()
-        (self.width, self.height) = draw_frame(stdscr, 'SUPER 100% TURBO TEXT REDACTOR PRO', str(self.path))
+        (self.width, self.height) = draw_frame(stdscr, str(self.path))
         i = 5
         self.editor.update_content(Position(0, 0))
         for line in self.editor.content:
