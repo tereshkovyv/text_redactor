@@ -4,7 +4,7 @@ from model.alert_session import AlertSession
 from user_interface.folder_window import FolderWindow
 from infrastructure.folder import Folder
 from model.editor_session import EditorSession
-
+from model.create_file_session import CreateFileSession
 
 class FolderSession:
     def __init__(self, path):
@@ -28,7 +28,7 @@ class FolderSession:
             if c == 10:
                 EditorSession(stdscr, elements[self.folder_window.selected]).loop()
             if c == 49:
-                pass  # create
+                CreateFileSession(stdscr, self.opened_folder.path).loop()
             if c == 50:
                 if AlertSession(stdscr, "Are you sure?").loop():
                     os.remove(elements[self.folder_window.selected])  # delete
