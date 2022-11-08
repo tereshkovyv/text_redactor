@@ -2,12 +2,6 @@ from infrastructure.position import Position
 
 
 class Document:
-    # def __init__(self):
-    #     self.deleted_lines = []  # int
-    #     self.inserted_lines = []  # (int, string)
-    #     self.changed_lines = []  # (int, string)
-    #     self.original_content = []  # lines
-
     @property
     def data_in_lines(self):
         return self.data
@@ -17,7 +11,7 @@ class Document:
         self.inserted_lines = []  # (int, string)
         self.changed_lines = []  # (int, string)
         self.original_content = []  # lines
-        
+
         with open(path, 'r', encoding='utf-8') as f:
             self.data = f.readlines()
 
@@ -38,3 +32,6 @@ class Document:
             del self.data[position.line]
             return
         self.data[position.line] = self.data[position.line][:position.word-1] + self.data[position.line][position.word:]
+
+    def save(self):
+        pass

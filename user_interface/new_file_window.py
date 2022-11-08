@@ -1,8 +1,7 @@
-from Drawer import draw_frame
-from window import Window
+from supportive.drawer import draw_frame
 
 
-class NewFileWindow(Window):
+class NewFileWindow():
     def __init__(self):
         pass
 

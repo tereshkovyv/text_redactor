@@ -70,7 +70,7 @@ def menu_file(name):
 
 #Вывести на экран содержимое папки
 def get_files():
-    currentDirectory = pathlib.Path('.')
+    currentDirectory = pathlib.Path('..')
     for currentFile in currentDirectory.iterdir():
         print(currentFile)
 

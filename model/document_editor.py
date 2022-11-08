@@ -4,9 +4,6 @@ from infrastructure.document import Document
 
 
 class DocumentEditor:
-    content = []
-    old_to_new_line = []
-
     @property
     def current_char(self):
         return self.content[self.cursor.y][self.cursor.x]
@@ -14,6 +11,8 @@ class DocumentEditor:
     def __init__(self, path, _width, _height):
         self.width = _width
         self.height = _height
+        self.content = []
+        self.old_to_new_line = []
         self.document = Document(path)
         self.cursor = Cursor(self.content)
 

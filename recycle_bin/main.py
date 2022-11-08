@@ -7,7 +7,7 @@ import os
 
 def draw(stdscr):
 
-    currentDirectory = pathlib.Path('.')
+    currentDirectory = pathlib.Path('..')
     folder_window(stdscr, currentDirectory)
 
 def folder_window(stdscr, currentDirectory):

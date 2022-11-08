@@ -1,5 +1,5 @@
 import unittest
-from infrastructure.document_editor import DocumentEditor, Position
+from model.document_editor import DocumentEditor, Position
 
 
 class WorkTimeTests(unittest.TestCase):
