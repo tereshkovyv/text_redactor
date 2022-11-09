@@ -36,15 +36,20 @@ class Cursor:
     def up(self):
         if self.y > 0:
             self.y -= 1
-            self.x = min(self.x, self.x_limit[self.y])
+            self.x = min(self.x, self.x_limit[self.y] - 1)
 
     def down(self):
         if self.y < self.y_limit - 1:
             self.y += 1
-            self.x = min(self.x, self.x_limit[self.y])
+            self.x = min(self.x, self.x_limit[self.y] - 1)
 
     def update_data(self, data):
         self.y_limit = len(data)
         self.x_limit = []
         for line in data:
             self.x_limit.append(len(line))
+
+        if self.y_limit != 0:
+            self.y = min(self.y, self.y_limit - 1)
+        if len(self.x_limit) != 0 and self.x_limit[self.y] != 0:
+            self.x = min(self.x, self.x_limit[self.y] - 1)

@@ -8,19 +8,19 @@ class DocumentEditor:
     def current_char(self):
         return self.content[self.cursor.y][self.cursor.x]
 
-    def __init__(self, path, _width, _height):
+    def __init__(self, document, _width, _height):
         self.width = _width
         self.height = _height
         self.content = []
         self.old_to_new_line = []
-        self.document = Document(path)
+        self.document = document
         self.cursor = Cursor(self.content)
         self.modified = False
 
     def remove_char_backspace(self):
         self.document.backspace_char(self.editor_to_original_position(self.cursor.position))
-        self.cursor.left()
         self.update_content(self.cursor.position)
+        self.cursor.left()
         self.modified = True
 
     def remove_char_delete(self):
@@ -29,9 +29,13 @@ class DocumentEditor:
         self.modified = True
 
     def add_char(self, char='f'):
-        self.document.add_char(self.editor_to_original_position(self.cursor.position), char)
+        position = self.editor_to_original_position(self.cursor.position)
+        if char != '\n':
+            self.document.add_char(self.editor_to_original_position(position), char)
+        else:
+            self.document.add_new_line_char(self.editor_to_original_position(position))
+        self.update_content(position)
         self.cursor.right()
-        self.update_content(self.cursor.position)
         self.modified = True
 
     def original_to_editor_position(self, position):
@@ -59,7 +63,7 @@ class DocumentEditor:
 
     def _get_content(self, start, offset):
         final_answer = []
-        answer = ''
+        current_line = ''
         old_to_new_line = []
 
         for line in self.document.data_in_lines[start:]:
@@ -69,30 +73,30 @@ class DocumentEditor:
             word_start = False
             word = ''
 
-            for i in range(offset, len(line)):
+            for i in range(len(line)):
                 if line[i].isalpha() and (i == 0 or not (line[i - 1].isalpha())):
                     word_start = True
-                if not (line[i].isalpha()) and i > 0 and line[i - 1].isalpha():
+                if not (line[i].isalpha()) and i > 0 and line[i - 1].isalpha() or i == len(line) - 1:
                     word_start = False
-                    if len(answer) + len(word) > self.width:
-                        final_answer.append(answer)
+                    if len(current_line) + len(word) > self.width:
+                        final_answer.append(current_line)
                         if len(final_answer) == self.height:
                             return final_answer, old_to_new_line
-                        answer = ''
-                    answer += word
+                        current_line = ''
+                    current_line += word
                     word = ''
 
                 if word_start:
                     word += line[i]
                 else:
-                    if len(answer) + 1 > self.width:
-                        final_answer.append(answer)
+                    if len(current_line) > self.width - 1:
+                        final_answer.append(current_line)
                         if len(final_answer) == self.height:
                             return final_answer, old_to_new_line
-                        answer = ''
-                    answer += line[i]
-            final_answer.append(answer)
+                        current_line = ''
+                    current_line += line[i]
+            final_answer.append(current_line)
             if len(final_answer) == self.height:
                 return final_answer, old_to_new_line
-            answer = ''
+            current_line = ''
         return final_answer, old_to_new_line

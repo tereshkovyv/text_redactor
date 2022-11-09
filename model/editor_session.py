@@ -3,13 +3,15 @@ import curses
 from model.document_editor import DocumentEditor
 from user_interface.editor_window import EditorWindow
 from model.alert_session import AlertSession
+from infrastructure.document import Document
 
 
 class EditorSession:
     def __init__(self, stdscr, path):
         self.stdscr = stdscr
 
-        self.editor = DocumentEditor(path, os.get_terminal_size().columns - 2, os.get_terminal_size().lines - 6)
+        document = Document(path)
+        self.editor = DocumentEditor(document, os.get_terminal_size().columns - 2, os.get_terminal_size().lines - 6)
         self.window = EditorWindow(path, self.editor)
 
     def loop(self):
@@ -24,7 +26,7 @@ class EditorSession:
 
                 break
             elif c == curses.KEY_UP:
-                self.document.cursor.up()
+                self.editor.cursor.up()
             elif c == curses.KEY_DOWN:
                 self.editor.cursor.down()
             elif c == curses.KEY_LEFT:
