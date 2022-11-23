@@ -1,58 +1,39 @@
 import unittest
 from model.document_editor import DocumentEditor, Position
-from infrastructure.document import Document
+from model.document import Document
 
 
 class CommonTests(unittest.TestCase):
-    def test_mapping_is_correct1(self):
-        document = Document('test.txt')
-        document_editor = DocumentEditor(document, 6, 25)
-        expected_content = ['abcd¶', 'abc·', 'abcde¶', 'ab']
-        expected_old_to_new_line = [0, 1, 3]
-        document_editor.update_content(Position(0, 0))
-        self.assertEqual(expected_old_to_new_line, document_editor.old_to_new_line)
-        self.assertEqual(expected_content, document_editor.content)
+    def test_test1(self):
+        document = Document('test2.txt')
+        document_editor = DocumentEditor(document, 9, 3)
 
-    def test_mapping_is_correct2(self):
-        document = Document('test.txt')
-        document_editor = DocumentEditor(document, 10, 25)
-        expected_content = ['abcd¶', 'abc·abcde¶', 'ab']
-        expected_old_to_new_line = [0, 1, 2]
-        document_editor.update_content(Position(0, 0))
-        self.assertEqual(expected_old_to_new_line, document_editor.old_to_new_line)
-        self.assertEqual(expected_content, document_editor.content)
+        expected_content1 = ['-Привет, ', 'как дела?', '-Хорошо, ']
+        expected_new_to_old_line1 = ['(0, 0)', '(0, 9)', '(1, 0)']
+        content, new_to_old_line = document_editor._get_content()
+        new_to_old_line = [str(x) for x in new_to_old_line]
 
+        self.assertListEqual(expected_new_to_old_line1, new_to_old_line)
+        self.assertEqual(expected_content1, content)
 
-class CursorPositionTests(unittest.TestCase):
-    def test_cursor_up(self):
-        document = Document('test.txt')
-        document_editor = DocumentEditor(document, 10, 25)
-        document_editor.cursor
+        document_editor.starting_line = 2
+        document_editor._get_content()
 
+        expected_content2 = ['а у тебя?', '-Тоже ', 'ничего.']
+        expected_new_to_old_line2 = ['(0, 0)', '(0, 9)', '(1, 0)', '(1, 9)', '(2, 0)', '(2, 6)']
+        document_editor.starting_line = 2
+        content, new_to_old_line = document_editor._get_content()
+        new_to_old_line = [str(x) for x in new_to_old_line]
 
-class TranslateAddressesTests(unittest.TestCase):
+        self.assertEqual(expected_content2, content)
+        self.assertListEqual(expected_new_to_old_line2, new_to_old_line)
+
     def test_editor_to_original_position(self):
-        document = Document('test.txt')
-        document_editor = DocumentEditor(document, 6, 15)
-        original_data = ['abcd\n', 'abc abcde\n', 'ab']
-        document_editor.content = ['abcd\n', 'abc ', 'abcde\n', 'ab']
-        document_editor.old_to_new_line = [0, 1, 3]
-        for line in range(len(document_editor.content)):
-            for i in range(len(document_editor.content[line])):
-                symbol = document_editor.content[line][i]
-                original_position = document_editor.editor_to_original_position(Position(line, i))
-                original_symbol = original_data[original_position.line][original_position.word]
-                self.assertEqual(symbol, original_symbol, symbol + " not equal to " + original_symbol)
-
-    def test_original_to_editor_position(self):
-        doc = DocumentEditor("C:\\Users\\Yuri\\Desktop\\Python\\TextRedactor\\text_redactor\\Tests\\test.txt", 6, 15)
-        original_data = ['abcd\n', 'abc abcde\n', 'ab']
-        doc.content = ['abcd\n', 'abc ', 'abcde\n', 'ab']
-        doc.old_to_new_line = [0, 1, 3]
-        for line in range(len(original_data)):
-            for i in range(len(original_data[line])):
-                symbol = original_data[line][i]
-                original_position = doc.original_to_editor_position(Position(line, i))
-                editor_symbol = doc.content[original_position.line][original_position.word]
-                self.assertEqual(symbol, editor_symbol, symbol + " not equal to " + editor_symbol)
-
+        document = Document('test2.txt')
+        document_editor = DocumentEditor(document, 9, 3)
+        document_editor._get_content()
+        document_editor.starting_line = 2
+        document_editor._get_content()
+        document_editor.starting_line = 3
+        document_editor._get_content()
+        self.assertEqual(str(document_editor._editor_to_original_position(Position(0, 6))), str(Position(1, 15)))

@@ -1,7 +1,7 @@
 import curses
 import pathlib
 
-from model.folder_session import FolderSession
+from controller.folder_session import FolderSession
 
 
 def draw(stdscr):

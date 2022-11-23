@@ -1,4 +1,4 @@
-from user_interface.alert_window import AlertWindow
+from ui.alert_window import AlertWindow
 
 
 class AlertSession:

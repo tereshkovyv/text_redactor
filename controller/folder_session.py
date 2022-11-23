@@ -1,10 +1,11 @@
 import os
 
-from model.alert_session import AlertSession
-from user_interface.folder_window import FolderWindow
-from infrastructure.folder import Folder
-from model.editor_session import EditorSession
-from model.create_file_session import CreateFileSession
+from controller.alert_session import AlertSession
+from ui.folder_window import FolderWindow
+from model.folder import Folder
+from controller.editor_session import EditorSession
+from controller.create_file_session import CreateFileSession
+
 
 class FolderSession:
     def __init__(self, path):
@@ -26,12 +27,14 @@ class FolderSession:
             if c == 258:
                 self.folder_window.selected = min(self.folder_window.selected + 1, len(elements) - 1)
             if c == 10:
-                EditorSession(stdscr, elements[self.folder_window.selected]).loop()
+                with EditorSession(stdscr, elements[self.folder_window.selected]) as session:
+                    session.loop()
             if c == 49:
-                CreateFileSession(stdscr, self.opened_folder.path).loop()
+                CreateFileSession(stdscr, self.opened_folder.path, self.opened_folder).loop()
+                self.opened_folder.refresh()
             if c == 50:
-                if AlertSession(stdscr, "Are you sure?").loop():
-                    os.remove(elements[self.folder_window.selected])  # delete
+                if AlertSession(stdscr, "Delete '" + str(elements[self.folder_window.selected]) + "' ?").loop():
+                    os.remove(elements[self.folder_window.selected])
+                self.opened_folder.refresh()
 
-            stdscr.addstr(0, 30, str(c))  # Вспомогательная хрень, которую нужно убрать
             stdscr.refresh()

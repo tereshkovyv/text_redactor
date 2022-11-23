@@ -1,5 +1,4 @@
-from infrastructure.position import Position
-from user_interface.drawer import draw_frame
+from ui.drawer import draw_frame
 
 
 class EditorWindow:
@@ -11,12 +10,13 @@ class EditorWindow:
         stdscr.clear()
         (self.width, self.height) = draw_frame(stdscr, str(self.path))
         i = 5
-        self.editor.update_content(Position(0, 0))
+        self.editor.update_content()
         for line in self.editor.content:
             stdscr.addstr(i, 1, line)
             i += 1
 
-        # stdscr.addstr(self.document.cursor.y + 5, self.document.cursor.x + 1, self.document.current_char,
-        #               curses.A_REVERSE)
         stdscr.refresh()
-        stdscr.move(self.editor.cursor.y + 5, self.editor.cursor.x + 1)
+        try:
+            stdscr.move(self.editor.cursor.y + 5, self.editor.cursor.x + 1)
+        except:
+            pass

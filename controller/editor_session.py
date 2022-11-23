@@ -1,18 +1,26 @@
 import os
 import curses
 from model.document_editor import DocumentEditor
-from user_interface.editor_window import EditorWindow
-from model.alert_session import AlertSession
-from infrastructure.document import Document
+from ui.editor_window import EditorWindow
+from controller.alert_session import AlertSession
+from model.document import Document
+from infrastructure.cursor_hit_the_edge_exception import CursorHitTheEdgeException
 
 
 class EditorSession:
     def __init__(self, stdscr, path):
         self.stdscr = stdscr
 
-        document = Document(path)
-        self.editor = DocumentEditor(document, os.get_terminal_size().columns - 2, os.get_terminal_size().lines - 6)
+        self.document = Document(path)
+        self.editor = DocumentEditor(self.document, os.get_terminal_size().columns - 2, os.get_terminal_size().lines - 6)
         self.window = EditorWindow(path, self.editor)
+
+    def __enter__(self):
+        self.document.__enter__()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.document.__exit__(None, None, None)
 
     def loop(self):
         while True:
@@ -26,9 +34,15 @@ class EditorSession:
 
                 break
             elif c == curses.KEY_UP:
-                self.editor.cursor.up()
+                try:
+                    self.editor.cursor.up()
+                except CursorHitTheEdgeException:
+                    self.editor.line_up()
             elif c == curses.KEY_DOWN:
-                self.editor.cursor.down()
+                try:
+                    self.editor.cursor.down()
+                except CursorHitTheEdgeException:
+                    self.editor.line_down()
             elif c == curses.KEY_LEFT:
                 self.editor.cursor.left()
             elif c == curses.KEY_RIGHT:
@@ -40,5 +54,3 @@ class EditorSession:
             else:
                 c = chr(c)
                 self.editor.add_char(c)
-
-            self.stdscr.move(self.editor.cursor.y + 5, self.editor.cursor.x + 1)

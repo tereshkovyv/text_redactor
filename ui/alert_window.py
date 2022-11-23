@@ -1,6 +1,6 @@
 import curses
 
-from user_interface.drawer import draw_frame
+from ui.drawer import draw_frame
 
 
 class AlertWindow:

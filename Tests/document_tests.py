@@ -1,5 +1,5 @@
 import unittest
-from infrastructure.document import Document
+from model.document import Document
 from infrastructure.position import Position
 
 
@@ -12,7 +12,7 @@ class DocumentTests(unittest.TestCase):
     def test_add_char(self):
         document = Document('test.txt')
         position_to_insert = Position(0, 2)
-        document.add_char(position_to_insert, 'x')
+        document.add_common_char(position_to_insert, 'x')
         expected_content = ['abxcd\n', 'abc abcde\n', 'ab']
         self.assertEqual(expected_content, document.data)
 
@@ -40,7 +40,7 @@ class DocumentTests(unittest.TestCase):
     def test_delete_char(self):
         document = Document('test.txt')
         position = Position(0, 2)
-        document.del_char(position)
+        document.delete_char(position)
         expected_content = ['abd\n', 'abc abcde\n', 'ab']
         self.assertEqual(expected_content, document.data)
 
@@ -54,14 +54,14 @@ class DocumentTests(unittest.TestCase):
     def test_delete_new_line_char(self):
         document = Document('test.txt')
         position = Position(0, 4)
-        document.del_char(position)
+        document.delete_char(position)
         expected_content = ['abcdabc abcde\n', 'ab']
         self.assertEqual(expected_content, document.data)
 
     def test_delete_char_at_last_position(self):
         document = Document('test.txt')
         position = Position(2, 1)
-        document.del_char(position)
+        document.delete_char(position)
         expected_content = ['abcd\n', 'abc abcde\n', 'ab']
         self.assertEqual(expected_content, document.data)
 
