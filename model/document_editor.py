@@ -1,15 +1,22 @@
+import re
+
 from model.cursor import Cursor
 from infrastructure.position import Position
+from plugins.autocomplete.autocompleter import Autocompleter
 
 
 class DocumentEditor:
-    def __init__(self, document, _width, _height):
+    def __init__(self, document, _width, _height, disable_autocompleter=False):
         self.width = _width
         self.height = _height
         self.content = []
         self.new_to_old_line = [Position(0, 0)]
         self.document = document
         self.cursor = Cursor(self.content)
+        if not disable_autocompleter:
+            self.autocompleter = Autocompleter()
+        else:
+            self.autocompleter = None
         self.modified = False
 
         self.reached_end_of_file = False
@@ -123,3 +130,33 @@ class DocumentEditor:
 
         self.reached_end_of_file = True
         return answer_lines, self.new_to_old_line
+
+    def autocomplete_word(self):
+        if self.cursor.position.word == 0 or len(self.content[self.cursor.position.line]) == self.cursor.position.word or self.content[self.cursor.position.line][self.cursor.position.word - 1] == ' ':
+            next_word = self.autocompleter.get_next_by_previous_words(self.get_previous_word())
+            print(f'ищем по предыдущим ({self.get_previous_word()}), нашли {next_word}')
+        else:
+            next_word = self.autocompleter.get_next_by_prefix(self.get_prefix())
+            print(f'ищем по префиксу ({self.get_prefix()}) нашли: {next_word}')
+
+        print(f'next word is: {next_word}')
+        for c in str(' ' + next_word):
+            self.add_char(c)
+
+    def get_previous_word(self):
+        line = self.content[self.cursor.position.line][:self.cursor.position.word]
+        line = line.lower()
+        reg = re.compile('[^а-я ]')
+        line = reg.sub('', line)
+        words = line.split()
+        if len(words) == 0:
+            return ''
+        return words[-1]
+
+    def get_prefix(self):
+        line = self.content[self.cursor.position.line][:self.cursor.position.word]
+        line = line.lower()
+        reg = re.compile('[^а-я ]')
+        line = reg.sub('', line)
+        words = line.split()
+        return words[-1:]

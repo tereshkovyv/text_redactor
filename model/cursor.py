@@ -26,21 +26,18 @@ class Cursor:
             self.y += 1
 
     def left(self):
-        print(f'from{self.x}, {self.y}')
         if self.x > 0:
             self.x -= 1
         elif self.y > 0:
             self.y -= 1
             self.x = self.x_limit[self.y] - 1
-        print(f'to{self.x}, {self.y}')
-        print(self.x_limit)
 
     def up(self):
         if self.y > 0:
             self.y -= 1
             self.x = min(self.x, self.x_limit[self.y] - 1)
 
-        if self.y == 0:
+        elif self.y == 0:
             raise CursorHitTheEdgeException()
 
     def down(self):

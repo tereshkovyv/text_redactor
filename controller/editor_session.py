@@ -49,6 +49,8 @@ class EditorSession:
                 self.editor.cursor.right()
             elif c == 8:
                 self.editor.remove_char_backspace()
+            elif c == 9:
+                self.editor.autocomplete_word()
             elif c == curses.KEY_DC:
                 self.editor.remove_char_delete()
             else:
